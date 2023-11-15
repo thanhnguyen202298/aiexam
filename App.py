@@ -33,9 +33,9 @@ def row2A(datef, low, high, open, close):
         low: {low}
         """
     }
-
+df = connectDataFile()
 def data2QA():
-    df = connectDataFile()
+    
     dataset = []
     size = len(df.date)
     for i in range(0, size):
@@ -53,10 +53,14 @@ def createDataQuestionJsonAI():
 
     with open(f"json/{filename[0:-4]}.json", "w") as output:
         output.write(objectdata)
+richData = []
+def repeatQuestionGetMoreAnswer(indexQ, data):
+    richData.append(data[indexQ])
+    df
 
 def makeGrowDataRich():
     with open(f"json/{filename[0:-4]}.json", "r") as objectFile:
         data = json.load(objectFile)
-        print(type(data))
+        
 
 makeGrowDataRich()
