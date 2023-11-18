@@ -12,30 +12,41 @@ from datetime import datetime
 ########################################
 
 filename = "BTC.csv"
+
+
 def connectDataFile():
     df = pd.read_csv(f"raw_data/{filename}")
     return df
 
+
 def row2Q(date):
     dateval = datetime.strptime(date, "%Y-%m-%d").date()
     return {
-        "role": "user", "content": f"how price is BTC in {dateval.strftime('%d %B, %Y')}?"
+        "role": "user",
+        "content": f"how price is BTC in {dateval.strftime('%d %B, %Y')}?",
     }
-
 
 def row2A(datef, low, high, open, close):
     dateval = datetime.strptime(datef, "%Y-%m-%d").date()
     return {
-        "role": "assistant", "content": f"""BTC's price in {dateval.strftime('%d %B, %Y')} is:\n 
+        "role": "assistant",
+        "content": f"""BTC's price in {dateval.strftime('%d %B, %Y')} is:\n 
         open: {open}
         close: {close}
         high: {high}
         low: {low}
-        """
+        """,
     }
+
 df = connectDataFile()
+
+##########################
+##########################
+####### CSV TO QUESTION ##
+########### ANSWER #######
+##########################
+
 def data2QA():
-    
     dataset = []
     size = len(df.date)
     for i in range(0, size):
@@ -45,22 +56,44 @@ def data2QA():
 
     return dataset
 
-def createDataQuestionJsonAI():
+def convertRawData2QA(non_qa_data):
+    response = openai.Completion.create(
+        engine="text-davinci-002",  # Hoặc sử dụng engine phù hợp
+        prompt=non_qa_data,
+        max_tokens=150,
+    )
+    return response["choices"][0]["text"].strip()
 
+
+###########################################
+###########################################
+############ create data question answer ##
+###########################################
+###########################################
+
+
+def createDataQuestionJsonAI():
     data = data2QA()
 
-    objectdata= json.dumps(data, indent=4)
+    objectdata = json.dumps(data, indent=4)
 
     with open(f"json/{filename[0:-4]}.json", "w") as output:
         output.write(objectdata)
+
+
 richData = []
+
+
 def repeatQuestionGetMoreAnswer(indexQ, data):
     richData.append(data[indexQ])
     df
 
+
+############################################
+############################################
+############ Make Rich Data question #######
+############################################
+############################################
 def makeGrowDataRich():
     with open(f"json/{filename[0:-4]}.json", "r") as objectFile:
         data = json.load(objectFile)
-        
-
-makeGrowDataRich()
