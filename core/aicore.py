@@ -20,11 +20,7 @@ client = OpenAI()
 def ask2Bot(questionList):
     params = dict(model="gpt-3.5-turbo", messages=questionList)
     response = client.completions.create(**params)
+    return response
 
 def msAsking(question):
      return msai.callBot(question)[1]
-
-def ask_question(question):
-    content = ask2Bot()
-
-print(keyAI)

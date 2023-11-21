@@ -100,7 +100,7 @@ def repeatQuestionGetMoreAnswer(indexQ, data):
     richData.append(data[indexQ])
     df
 
-
+df = connectDataFile()
 ############################################
 ############################################
 ############ Make Rich Data question #######
@@ -108,7 +108,7 @@ def repeatQuestionGetMoreAnswer(indexQ, data):
 ############################################
 def makeGrowDataRich():
     with open(f"json/{filename[0:-4]}.json", "r") as objectFile:
-        data = json.load(objectFile)
-        size = len (data)
-        for i in range(0,-2,2):
+        
+        size = len (dataf.date)
+        #for i in range(size - 1, size/5):
             

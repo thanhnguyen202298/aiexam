@@ -1,3 +1,3 @@
 config = {
-    "apiKey": "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"
+    "apiKey": "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"
 }
