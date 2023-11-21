@@ -1,10 +1,12 @@
-import openai
+from openai import OpenAI
 from datasets import load_dataset
 import os
 
+import asyncio
 import pandas as pd
 import json
 from datetime import datetime
+from core import aicore
 
 ########################################
 #########TODO 1  #######################
@@ -13,9 +15,12 @@ from datetime import datetime
 
 filename = "BTC.csv"
 
-
-def connectDataFile():
-    df = pd.read_csv(f"raw_data/{filename}")
+def connectDataFile(file):
+    df = None
+    if file != None:
+        df = pd.read_csv(f"raw_data/{file}")
+    else:
+         df = pd.read_csv(f"raw_data/{filename}")
     return df
 
 
@@ -38,7 +43,7 @@ def row2A(datef, low, high, open, close):
         """,
     }
 
-df = connectDataFile()
+#df = connectDataFile()
 
 ##########################
 ##########################
@@ -56,13 +61,16 @@ def data2QA():
 
     return dataset
 
+client = OpenAI()
+
 def convertRawData2QA(non_qa_data):
-    response = openai.Completion.create(
-        engine="text-davinci-002",  # Hoặc sử dụng engine phù hợp
+    response = client.completions.create(
+        model="text-davinci-002",  # Hoặc sử dụng engine phù hợp
         prompt=non_qa_data,
         max_tokens=150,
     )
-    return response["choices"][0]["text"].strip()
+    print(response.choices[0].text.strip())
+    return response.choices[0].text.strip()
 
 
 ###########################################
@@ -71,6 +79,10 @@ def convertRawData2QA(non_qa_data):
 ###########################################
 ###########################################
 
+def data2file(data):
+
+    with open(f"json/{filename[0:-4]}{datetime.now().strftime('%f')}.json", "w") as output:
+        output.write(data)
 
 def createDataQuestionJsonAI():
     data = data2QA()
@@ -97,3 +109,6 @@ def repeatQuestionGetMoreAnswer(indexQ, data):
 def makeGrowDataRich():
     with open(f"json/{filename[0:-4]}.json", "r") as objectFile:
         data = json.load(objectFile)
+        size = len (data)
+        for i in range(0,-2,2):
+            
